@@ -1,0 +1,297 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>¡Cepillado Nocturno!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Fredoka', sans-serif;
+      background-color: black;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+      color: #01579b;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      color: white;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    }
+
+    #instruction {
+      font-size: 1.8em;
+      color: white;
+      font-weight: bold;
+      margin-top: 20px;
+      min-height: 100px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .btn {
+      padding: 20px 30px;
+      margin: 10px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    #startButton {
+      background: #4caf50;
+      color: white;
+    }
+
+    #pauseButton {
+      background: #ff9800;
+      color: white;
+    }
+
+    #pauseButton:disabled,
+    #startButton:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    #countdown {
+      font-size: 2.5em;
+      color: #d32f2f;
+      display: none;
+    }
+
+    #progress {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: white;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .tooth-img {
+      width: 38px;
+      height: 38px;
+      margin: 20px 2px;
+      border-radius: 10px;
+    }
+
+    @media screen and (max-width: 600px) {
+      #instruction {
+        font-size: 1.5em;
+      }
+      .btn {
+        font-size: 1em;
+        padding: 15px 20px;
+      }
+      #countdown {
+        font-size: 2em;
+      }
+      #progress {
+        font-size: 1.2em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🌙 ¡Cepillado Nocturno!</h1>
+
+  <button id="startButton" class="btn">🟢 Comenzar</button>
+  <button id="pauseButton" class="btn" disabled>⏸️ Pausar</button>
+  <div id="instruction">¡Presiona comenzar para empezar!</div>
+  <div id="countdown">9</div>
+  <div id="brush-animation"></div>
+  <div id="progress"></div>
+
+  <audio id="bell" src="https://www.soundjay.com/door/sounds/doorbell-1.mp3" preload="auto"></audio>
+<div style="margin-top: 40px; text-align: center;">
+  <button onclick="location.href='index.html'" class="btn" style="background:#0288d1; color:white;">
+    🔙 Volver al inicio
+  </button>
+</div>
+
+  <script>
+    const zonas = [
+      "Superior derecha por fuera",
+      "Superior derecha que muerde",
+      "Superior derecha por dentro",
+      "Superior al frente por fuera",
+      "Superior al frente que muerde",
+      "Superior al frente por dentro",
+      "Superior izquierda por fuera",
+      "Superior izquierda que muerde",
+      "Superior izquierda por dentro",
+      "Inferior derecha por fuera",
+      "Inferior derecha que muerde",
+      "Inferior derecha por dentro",
+      "Inferior al frente por fuera",
+      "Inferior al frente que muerde",
+      "Inferior al frente por dentro",
+      "Inferior izquierda por fuera",
+      "Inferior izquierda que muerde",
+      "Inferior izquierda por dentro"
+    ];
+
+    const frasesTransicion = [
+      "Pasemos a la otra cara.",
+      "Siguiente .",
+      "Siguiente.",
+      "Sigamos .",
+      "¡Siguiente!",
+      "Siguiente.",
+      "Siguiente.",
+      "Siguiente.",
+      "Siguiente.",
+      "¡Continuamos!",
+      "Siguiente.",
+      "¡Siguiente!",
+      "Otra .",
+      "Vamos .",
+      "Próxima.",
+      "Siguiente .",
+      "Siguiente.",
+      "Y la última."
+    ];
+
+    const duracionZona = 12;
+    const bell = document.getElementById('bell');
+    const instruction = document.getElementById('instruction');
+    const startButton = document.getElementById('startButton');
+    const pauseButton = document.getElementById('pauseButton');
+    const countdown = document.getElementById('countdown');
+    const brushAnimation = document.getElementById('brush-animation');
+    const progress = document.getElementById('progress');
+
+    let index = 0;
+    let enPausa = false;
+    let intervaloContador = null;
+
+    function renderProgress() {
+      progress.innerHTML = `Zona ${index + 1}/${zonas.length} <br>`;
+      for (let i = 0; i < zonas.length; i++) {
+        const contenedor = document.createElement('div');
+        contenedor.style.display = 'inline-block';
+        contenedor.style.textAlign = 'center';
+        contenedor.style.margin = '0 4px';
+
+        const img = document.createElement('img');
+        img.className = 'tooth-img';
+        img.src = i < index ? 'feli.png' : 'triste.png';
+        img.alt = '';
+
+        const emoji = document.createElement('div');
+        emoji.textContent = i < index ? '😊' : '😟';
+        emoji.style.fontSize = '1em';
+
+        contenedor.appendChild(img);
+        contenedor.appendChild(emoji);
+        progress.appendChild(contenedor);
+      }
+    }
+
+    let vozSeleccionada = null;
+
+    window.speechSynthesis.onvoiceschanged = () => {
+      const voces = speechSynthesis.getVoices();
+      vozSeleccionada = voces.find(v => v.name === "Microsoft Sabina - Spanish (Spain)");
+    };
+
+    function hablar(texto, callback) {
+      const mensaje = new SpeechSynthesisUtterance(texto);
+      mensaje.lang = 'es-ES';
+      mensaje.rate = 1.5;
+      mensaje.pitch = 1.1;
+
+      if (vozSeleccionada) {
+        mensaje.voice = vozSeleccionada;
+      }
+
+      speechSynthesis.cancel();
+      if (callback) mensaje.onend = callback;
+      speechSynthesis.speak(mensaje);
+    }
+
+    function iniciarZona() {
+      if (index >= zonas.length) {
+        instruction.textContent = "🎉 ¡Cepillado completo! ¡Muy bien!";
+        brushAnimation.style.display = 'none';
+        renderProgress();
+        hablar("Cepillado completo. ¡Buenas Noches y que descanses!");
+        startButton.disabled = false;
+        pauseButton.disabled = true;
+        return;
+      }
+
+      renderProgress();
+      brushAnimation.style.display = 'block';
+
+      const texto = index === 0
+        ? `¡Vamos a comenzar el cepillado de la noche! Empecemos por la parte ${zonas[index]}`
+        : `${frasesTransicion[index % frasesTransicion.length]} ${zonas[index]}`;
+
+      instruction.textContent = texto;
+      hablar(texto, iniciarContador);
+    }
+
+    function iniciarContador() {
+      let tiempoRestante = duracionZona;
+      countdown.style.display = 'block';
+      countdown.textContent = tiempoRestante;
+
+      intervaloContador = setInterval(() => {
+        if (enPausa) return;
+        tiempoRestante--;
+        countdown.textContent = tiempoRestante;
+
+        if (tiempoRestante <= 0) {
+          clearInterval(intervaloContador);
+          countdown.style.display = 'none';
+          brushAnimation.style.display = 'none';
+          bell.play();
+          setTimeout(() => {
+            index++;
+            iniciarZona();
+          }, 1500);
+        }
+      }, 1000);
+    }
+
+    startButton.addEventListener('click', () => {
+      startButton.disabled = true;
+      pauseButton.disabled = false;
+      index = 0;
+      enPausa = false;
+      activarWakeLock();
+      iniciarZona();
+    });
+
+    pauseButton.addEventListener('click', () => {
+      enPausa = !enPausa;
+      pauseButton.textContent = enPausa ? "▶️ Reanudar" : "⏸️ Pausar";
+    });
+
+    let wakeLock = null;
+
+    async function activarWakeLock() {
+      try {
+        wakeLock = await navigator.wakeLock.request('screen');
+      } catch (err) {
+        console.warn('No se pudo activar wake lock:', err);
+      }
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (wakeLock !== null && document.visibilityState === 'visible') {
+        activarWakeLock();
+      }
+    });
+  </script>
+</body>
+</html>

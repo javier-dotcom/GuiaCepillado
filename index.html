@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guía de Cepillado</title>
+  <link rel="manifest" href="manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&display=swap" rel="stylesheet">
+  <style>
+    /* ===== CSS COMPLETO ===== */
+    :root{
+      --c-bg1:#E1F5FE;
+      --c-bg2:#B3E5FC;
+      --c-text:#0D47A1;
+      --c-note:#1b2b8a;
+      --btn-blue1:#64B5F6;
+      --btn-blue2:#90CAF9;
+      --btn-green1:#81C784;
+      --btn-green2:#A5D6A7;
+      --btn-gold1:#FFD54F;
+      --btn-gold2:#FFB74D;
+    }
+    html, body{ height:100%; }
+    body{
+      font-family: 'Fredoka', system-ui, sans-serif;
+      margin:0;
+      padding: 24px 12px 64px;
+      text-align:center;
+      color:var(--c-text);
+      background: linear-gradient(180deg, var(--c-bg1), var(--c-bg2));
+      overflow-x:hidden;
+    }
+    .page{
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    .topbar{
+      max-width: 560px;
+      margin: 8px auto 10px;
+      padding: 10px 12px;
+      background: #ffffffd9;
+      border: 2px solid #E3F2FD;
+      border-radius: 14px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,.06);
+    }
+    .topbar .logo{
+      height: 54px; width:auto; flex:0 0 auto;
+      filter: drop-shadow(0 1px 0 rgba(0,0,0,.05));
+    }
+    .topbar .byline{
+      font-size: .95rem;
+      color:#0D47A1;
+      text-align:left;
+    }
+    h1{
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      margin: 6px 0 10px;
+      color: var(--c-text);
+      text-shadow: 0 1px 0 rgba(255,255,255,.7);
+      animation: fadeInDown .7s ease both;
+    }
+    .sub{
+      display:inline-block;
+      color:#0D47A1;
+      background: #ffffffcc;
+      padding: 10px 16px;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: clamp(1.05rem, 2.6vw, 1.3rem);
+      margin: 0 0 14px;
+      box-shadow: 0 2px 0 rgba(0,0,0,.06);
+      animation: fadeInDown .8s .05s ease both;
+    }
+    .btn{
+      display:block;
+      width: 100%;
+      margin: 14px auto;
+      padding: 18px 22px;
+      font-size: clamp(1rem, 3.2vw, 1.2rem);
+      border: 0;
+      border-radius: 18px;
+      color: #fff;
+      cursor:pointer;
+      box-shadow: 0 6px 0 rgba(0,0,0,.1), 0 12px 22px rgba(0,0,0,.12);
+      transform: translateY(0);
+      transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
+      opacity:0;
+      animation: fadeInUp .6s ease forwards;
+    }
+    .btn:hover{ transform: translateY(-2px); }
+    .btn:active{ transform: translateY(1px); }
+    .momento-btn{ background: linear-gradient(135deg, var(--btn-blue1), var(--btn-blue2)); }
+    .momento-btn:nth-of-type(2){ background: linear-gradient(135deg, var(--btn-green1), var(--btn-green2)); }
+    .momento-btn:nth-of-type(3){ background: linear-gradient(135deg, var(--btn-gold1), var(--btn-gold2)); color:#5d4037; }
+    .explicacion{
+      margin: 12px auto 22px;
+      padding: 14px 16px;
+      background: #ffffff;
+      border: 2px solid #E3F2FD;
+      border-radius: 16px;
+      color: var(--c-note);
+      font-size: clamp(.95rem, 2.6vw, 1.05rem);
+      box-shadow: 0 4px 14px rgba(0,0,0,.08);
+      backdrop-filter: blur(2px);
+      opacity:0;
+      animation: fadeInUp .6s .1s ease forwards;
+    }
+    .bg-text, .debug, .watermark, .hero-text { display:none !important; }
+    body * { position: relative; z-index: 1; }
+    @keyframes fadeInDown{
+      0%{ opacity:0; transform: translateY(-14px); }
+      100%{ opacity:1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp{
+      0%{ opacity:0; transform: translateY(14px); }
+      100%{ opacity:1; transform: translateY(0); }
+    }
+    .footer{
+      max-width: 560px;
+      margin: 30px auto 0;
+      padding: 10px 12px;
+      font-size: .9rem;
+      color: #0D47A1;
+      background: #ffffffcc;
+      border: 2px solid #E3F2FD;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 3px 10px rgba(0,0,0,.06);
+    }
+    @media (prefers-reduced-motion: reduce){
+      *{ animation: none !important; transition: none !important; }
+    }
+    @media (max-width: 600px){
+      body{ padding: 20px 12px 60px; }
+    }
+    .topbar .byline {
+  text-align: left;
+  color: #0D47A1;
+  line-height: 1.2em;
+}
+.topbar .byline .line1 {
+  display: block;
+  font-size: 1.05rem;  /* más grande que antes */
+  font-weight: 700;
+}
+.topbar .byline .line2 {
+  display: block;
+  font-size: 0.9rem;   /* un poco más pequeño */
+  font-weight: 500;
+}
+
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <img src="LOGO-AEC-ROSARIO.-.jpg" alt="Logo del Sindicato" class="logo">
+    <div class="byline">
+  <span class="line1">Cedido a usted por AEC- ROSARIO</span>
+  <span class="line2">Desarrollado por: Creativa Software</span>
+</div>
+
+  </header>
+
+  <div class="page">
+    <h1>🦷 ¡A Cepillarse los Dientes!</h1>
+    <div class="sub">Elije el cepillado</div>
+
+    <button class="btn momento-btn" onclick="location.href='cepillado1.html'">
+      ☀️ 1° Cepillado: Mañana
+    </button>
+    <div class="explicacion">El cepillado matutino elimina bacterias acumuladas durante la noche y refresca tu aliento para el día.</div>
+
+    <button class="btn momento-btn" onclick="location.href='cepillado2.html'">
+      😋 2° Cepillado: Mediodía
+    </button>
+    <div class="explicacion">Después del almuerzo, ayuda a prevenir la formación de placa y caries.</div>
+
+    <button class="btn momento-btn" onclick="location.href='cepillado3.html'">
+      🌙 3° Cepillado: Noche
+    </button>
+    <div class="explicacion">El cepillado nocturno es crucial: elimina restos de comida y protege tus dientes mientras duermes.</div>
+  </div>
+
+  <footer class="footer">
+    © 2025 Creativa Software · Cedido gracias al Sindicato
+  </footer>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./service-worker.js")
+        .then(() => console.log("Service Worker registrado"))
+        .catch(err => console.error("Error registrando el SW:", err));
+    }
+  </script>
+</body>
+</html>
