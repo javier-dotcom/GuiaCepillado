@@ -8,12 +8,12 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "LOGO-AEC-ROSARIO.-.jpg",
+      "src": "LOGO-AEC-ROSARIO.-.ico",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "LOGO-AEC-ROSARIO.-.jpg",
+      "src": "LOGO-AEC-ROSARIO.-.ico",
       "sizes": "512x512",
       "type": "image/png"
     }
